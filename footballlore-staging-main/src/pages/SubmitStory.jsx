@@ -43,6 +43,7 @@ const SubmitStory = () => {
     priority: false,
   });
 
+  const [priority, setPriority] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [priorityChecked, setPriorityChecked] = useState(false);
@@ -53,8 +54,12 @@ const SubmitStory = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setPriority(checked);
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -123,10 +128,10 @@ const SubmitStory = () => {
         setFormData({ name: '', email: '', title: '', story: '', priority: false });
         setPriorityChecked(false);
       } else {
-        setError('Something went wrong. Please try again.');
+        setError('Something went wrong.');
       }
     } catch (err) {
-      setError('Network error. Please try again later.');
+      setError('Network error.');
     }
   };
 
@@ -135,46 +140,18 @@ const SubmitStory = () => {
       <h2>Submit Your Story</h2>
 
 
-
       <form onSubmit={handleSubmit} noValidate>
         <label>Name</label>
-        <input
-          name="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          aria-label="Name"
-        />
+        <input name="name" type="text" value={formData.name} onChange={handleChange} required />
 
         <label>Email</label>
-        <input
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          aria-label="Email"
-        />
+        <input name="email" type="email" value={formData.email} onChange={handleChange} required />
 
         <label>Story Title</label>
-        <input
-          name="title"
-          type="text"
-          value={formData.title}
-          onChange={handleChange}
-          required
-          aria-label="Story Title"
-        />
+        <input name="title" type="text" value={formData.title} onChange={handleChange} required />
 
         <label>Your Story</label>
-        <textarea
-          name="story"
-          value={formData.story}
-          onChange={handleChange}
-          required
-          aria-label="Your Story"
-        />
+        <textarea name="story" value={formData.story} onChange={handleChange} required />
 
         {/* Priority Checkbox Section */}
         <div className="mt-6 mb-6 p-4 border-2 border-football-yellow rounded-lg bg-yellow-50 flex items-center justify-between">
