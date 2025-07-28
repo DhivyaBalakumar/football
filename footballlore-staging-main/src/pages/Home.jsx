@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Trophy, Users, Star, TrendingUp } from "lucide-react"
-import stories from "../assets/stories"
+import { useEffect, useState } from "react";
 import StoryCard from "../components/StoryCard"
 import RaffleWidget from "../components/RaffleWidget"
 import StripeCheckoutButton from "../components/StripeCheckoutButton"
@@ -8,6 +8,13 @@ import './styles/Stories.css'
 
 const Home = () => {
   
+  const [stories, setStories] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/api/stories")
+      .then((res) => res.json())
+      .then((data) => setStories(data))
+      .catch(() => setStories([]));
+  }, []);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero Section */}
@@ -69,16 +76,21 @@ const Home = () => {
 
       {/* Featured Stories */}
       <section className="story-grid">
-        {stories.map((story, i) => (
-          <StoryCard
-            key={story.id}
-            id={story.id}
-            title={story.title}
-            snippet={story.snippet}
-            image={story.image}
-            mostViewed={i === 0} // Mark the first story as "Most Viewed"
-          />
-        ))}
+        {stories.length === 0 ? (
+          <p>No stories yet. Be the first to submit one!</p>
+        ) : (
+          stories.map((story, i) => (
+            <StoryCard
+              key={story.id}
+              id={story.id}
+              title={story.title}
+              snippet={story.snippet || story.story?.slice(0, 60) + "..."}
+              image={story.image || "/download.jpeg"}
+              mostViewed={i === 0}
+              priority={story.priority}
+            />
+          ))
+        )}
       </section>
 
       {/* CTA Section */}
